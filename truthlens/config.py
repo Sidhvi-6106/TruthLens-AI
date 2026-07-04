@@ -9,11 +9,21 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+def _normalize_database_uri(raw_uri):
+    if not raw_uri:
+        return None
+    if raw_uri.startswith("postgres://"):
+        return raw_uri.replace("postgres://", "postgresql://", 1)
+    return raw_uri
+
+
 class Config:
     PROJECT_TITLE = "TruthLens AI - Next Generation News Intelligence, Fact Verification & Deepfake Detection Platform"
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret-change-in-production")
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR / 'truthlens_dev.db'}")
+    SQLALCHEMY_DATABASE_URI = _normalize_database_uri(
+        os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL")
+    ) or f"sqlite:///{BASE_DIR / 'truthlens_dev.db'}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = Path(os.getenv("UPLOAD_FOLDER", BASE_DIR / "uploads"))
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50 MB
