@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TruthLens AI</title>
+    <link rel="stylesheet" href="/app.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-card">
+        <p class="eyebrow">TruthLens AI</p>
+        <h1>News intelligence, fact verification, and deepfake detection.</h1>
+        <p class="subtitle">
+          This frontend is hosted on Vercel and is wired to your Render backend.
+          Enter your backend URL below to verify the connection.
+        </p>
+
+        <div class="input-row">
+          <input id="backendUrl" type="url" value="https://truthlens-api.onrender.com" />
+          <button id="checkBtn">Check backend</button>
+        </div>
+
+        <div id="status" class="status-box">Waiting for a backend check…</div>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
