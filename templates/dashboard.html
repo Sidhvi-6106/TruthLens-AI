@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ project_title }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body class="dark">
+  <!-- Toast Notification System -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <div class="app-shell logged-out" id="appShell">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <a class="brand" href="#home">
+        <span class="brand-mark">TL</span>
+        <span><strong>TruthLens AI</strong><small>News Intelligence</small></span>
+      </a>
+      <nav class="nav-list" aria-label="Primary navigation" id="sidebarNav">
+        <a class="active" href="#home" data-target="home">Home</a>
+        <a href="#trending" data-target="trending">Trending</a>
+        <a href="#categories" data-target="categories">Categories</a>
+        <a href="#verification" data-target="verification">Verification Center</a>
+        <a href="#deepfake" data-target="deepfake">Deepfake Detection</a>
+        <a href="#whatsapp" data-target="whatsapp">WhatsApp Verifier</a>
+        <a href="#rumors" data-target="rumors">Rumor Tracker</a>
+        <a href="#assistant" data-target="assistant">TRUTHBOT AI</a>
+        <a href="#saved" data-target="saved">Saved Articles</a>
+        <a href="#profile" data-target="profile">User Profile</a>
+        <a href="#admin" data-target="admin" id="adminNavLink" style="display: none;">Admin Dashboard</a>
+      </nav>
+      <div class="sidebar-card">
+        <span class="status-dot"></span>
+        Live monitoring across RSS feeds & premium APIs enabled.
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      
+      <!-- Topbar Header -->
+      <header class="topbar">
+        <button class="icon-button mobile-menu" type="button" aria-label="Open navigation">☰ Menu</button>
+        <div class="search-shell">
+          <span>🔍</span>
+          <input id="globalSearch" type="search" placeholder="Search news, claims, topics, sources...">
+        </div>
+        <div class="top-actions" id="topActions">
+          <button class="ghost-button" id="themeToggle" type="button">Light Mode</button>
+          
+          <!-- Guest Actions -->
+          <div class="guest-only" style="display: flex; gap: 10px;">
+            <a href="#login" class="ghost-button">Sign in</a>
+            <a href="#register" class="primary-button">Create account</a>
+          </div>
+
+          <!-- User Profile Brief -->
+          <div class="user-only" style="display: none; align-items: center; gap: 12px;">
+            <div class="user-badge-header">
+              <span id="headerPoints" class="trust-points-badge">0 pts</span>
+            </div>
+            <a href="#profile" class="profile-header-link">
+              <img id="headerAvatar" class="avatar-small" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=80&q=80" alt="Avatar">
+            </a>
+            <button class="ghost-button" id="logoutBtn" type="button">Logout</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- VIEW: Home (Dashboard) -->
+      <div class="view-container" id="homeView">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">AI News Intelligence & Trust Platform</p>
+            <h1>TruthLens AI - Next Generation News Intelligence & Fact Verification</h1>
+            <p class="hero-text">A premium glassmorphic command center for real-time news aggregation, deepfake scanner, bias visualization, translation, and localized rumor analytics.</p>
+            <div class="hero-actions">
+              <a class="primary-button" href="#verification">Verify a claim</a>
+              <a class="secondary-button" href="#deepfake">Analyze media</a>
+            </div>
+            <div class="trust-strip">
+              <span>Flask 3.0</span><span>SQLite 3</span><span>JWT Auth</span><span>TOTP MFA</span><span>Gemini AI</span><span>RSS Parser</span>
+            </div>
+          </div>
+          <div class="hero-panel">
+            <div class="breaking">Breaking News Banner</div>
+            <article class="feature-card">
+              <div class="article-meta"><span id="heroSource">BBC News</span><span id="heroTime">Just now</span></div>
+              <h2 id="heroTitle">Connecting verified networks to combat synthetic media propagation</h2>
+              <p id="heroSummary">TruthLens continuously aggregates multi-source feeds, extracts assertions, and evaluates them using real-time credibility scoring matrices.</p>
+              <div class="score-row">
+                <div class="gauge" style="--score:95" id="heroGauge"><span>95</span></div>
+                <div><strong>Highly Reliable</strong><small>Cross-source confirmation passed</small></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- General Platform Statistics -->
+        <section class="metrics-grid" aria-label="Platform metrics">
+          <div><strong id="statArticles">4,520</strong><span>Articles Aggregated</span></div>
+          <div><strong id="statVerifications">148</strong><span>Claims Verified</span></div>
+          <div><strong id="statReports">92</strong><span>Community Reports</span></div>
+          <div><strong id="statHotspots">4</strong><span>Active Rumor Hotspots</span></div>
+        </section>
+      </div>
+
+      <!-- VIEW: Trending Stories Feed -->
+      <div class="view-container" id="trendingView" style="display: none;">
+        <section class="section-grid two">
+          <div class="panel">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Real-Time News Engine</p>
+                <h2>Trending News Feed</h2>
+              </div>
+              <button class="ghost-button small" id="refreshNewsBtn" type="button">🔄 Sync Feeds</button>
+            </div>
+            <div class="article-list" id="articleList">
+              <!-- Dynamically rendered stories -->
+              <div class="skeleton-container">
+                <div class="skeleton-line" style="width: 30%"></div>
+                <div class="skeleton-line" style="width: 80%"></div>
+                <div class="skeleton-line" style="width: 60%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel ai-panel">
+            <p class="eyebrow">AI Risk Monitoring</p>
+            <h2>Anomalous Media Warnings</h2>
+            <div id="aiRiskInsights">
+              <!-- Dynamically populated warnings -->
+            </div>
+            <h3>Trust Score Progression</h3>
+            <canvas id="trendCanvas" width="520" height="180" aria-label="Trend graph"></canvas>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: Categories Explorer -->
+      <div class="view-container" id="categoriesView" style="display: none;">
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Structured Exploration</p>
+              <h2>Browse News by Category</h2>
+            </div>
+            <div class="segmented" id="categorySort">
+              <button class="active" type="button" data-sort="score">Highest Trust</button>
+              <button type="button" data-sort="count">Story Volume</button>
+            </div>
+          </div>
+          <div class="category-grid" id="categoryGrid"></div>
+        </section>
+      </div>
+
+      <!-- VIEW: Verification Center -->
+      <div class="view-container" id="verificationView" style="display: none;">
+        <section class="section-grid two">
+          <div class="panel">
+            <p class="eyebrow">Analysis Pipeline</p>
+            <h2>Paste Text, Claim, or Article Content</h2>
+            <textarea id="claimInput" rows="10" placeholder="Copy-paste a viral social post, forward, or article text here for full fact verification, AI-writing detection, and linguistic bias audits..."></textarea>
+            <div class="upload-row" style="margin-top: 15px;">
+              <label class="file-control">
+                <span>📁 Upload Document</span>
+                <input id="docUpload" type="file" accept=".txt,.pdf">
+              </label>
+              <span id="uploadedDocName" class="muted" style="margin-left: 10px;">No file selected</span>
+              <button class="primary-button" id="verifyClaim" type="button">Run Integrity Scan</button>
+            </div>
+          </div>
+          
+          <div class="panel report-card">
+            <p class="eyebrow">TruthLens Verification Index</p>
+            <div class="score-display">
+              <div class="gauge large" id="claimGauge" style="--score:50"><span id="claimScore">50</span></div>
+              <div>
+                <h2 id="claimLabel">Scan Pending</h2>
+                <p id="claimSummary">Submit a claim to generate an authenticity rating, cross-media verification breakdown, machine generation assessment, and bias breakdown.</p>
+              </div>
+            </div>
+            <h3>Critical Integrity Vectors</h3>
+            <div class="factor-list" id="factorList"></div>
+            
+            <div id="aiDetectorPanel" style="display: none; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line);">
+              <h3>AI Writing Classifier</h3>
+              <p id="aiProbabilityLabel">AI Generation Probability: --</p>
+              <div class="progress"><span id="aiProbabilityProgress" style="--width:0%"></span></div>
+              <ul id="aiDetectionDetails" style="margin-top: 10px; padding-left: 20px; font-size: 13px; color: var(--muted);"></ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- Verification Report Log -->
+        <section class="panel" id="verificationReportDetails" style="display: none; margin-top: 20px;">
+          <h2>Linguistic Analytics & Source Alignment</h2>
+          <div class="compare-columns">
+            <div>
+              <h3>Extracted Assertions</h3>
+              <ul id="extractedClaimsList" style="padding-left: 20px; line-height: 1.6;"></ul>
+            </div>
+            <div>
+              <h3>Checked Repositories</h3>
+              <ul id="evidenceSourcesList" style="padding-left: 20px; line-height: 1.6;"></ul>
+            </div>
+          </div>
+          <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line);">
+            <h3>Linguistic Biases & Propaganda Scoring</h3>
+            <div class="metrics-grid" style="margin: 10px 0;">
+              <div><strong id="biasPolitical">Center</strong><span>Political Alignment</span></div>
+              <div><strong id="biasEmotional">0%</strong><span>Emotional Intensity</span></div>
+              <div><strong id="biasPropaganda">0%</strong><span>Propaganda Markers</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: Deepfake Scanner -->
+      <div class="view-container" id="deepfakeView" style="display: none;">
+        <section class="section-grid two">
+          <div class="panel">
+            <p class="eyebrow">Synthetic Media Analysis</p>
+            <h2>Inspect Images, Videos, or Audio</h2>
+            <div class="drop-zone" id="deepfakeDropZone">
+              <input id="mediaUpload" type="file" accept="image/*,video/*,audio/*">
+              <strong>Drag & drop or click to upload file</strong>
+              <span>Processes face-swaps, GAN generation, facial manipulations, audio cloning, and voice-splicing. Limit 50MB.</span>
+            </div>
+            <div id="selectedDeepfakeFile" class="muted" style="margin: 10px 0; text-align: center;">No file selected</div>
+            <button class="primary-button full" id="analyzeMedia" type="button">Run Deepfake Bench Scan</button>
+          </div>
+          <div class="panel evidence-panel">
+            <p class="eyebrow">Visual/Spectral Heatmap</p>
+            <h2>Analysis Artifact Map</h2>
+            <!-- Heatmap Visualization representing artifacts -->
+            <div class="heatmap-wrapper" style="position: relative; width: 100%; min-height: 220px; background: #000; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+              <img id="heatmapImage" src="" style="display: none; max-width: 100%; max-height: 220px; object-fit: contain;">
+              <div class="heatmap-overlay" id="heatmapOverlay" style="position: absolute; inset: 0; pointer-events: none;"></div>
+              <div id="heatmapPlaceholder" class="muted" style="text-align: center; padding: 20px;">Upload an image or video to view manipulated spectral/spatial hot regions.</div>
+            </div>
+            <div class="result-grid" style="margin-top: 15px;">
+              <div><strong id="authScore">--</strong><span>Authenticity</span></div>
+              <div><strong id="manipScore">--</strong><span>Manipulation</span></div>
+              <div><strong id="framesChecked">--</strong><span>Confidence Index</span></div>
+              <div><strong id="deepfakeModel">--</strong><span>Inference Models</span></div>
+            </div>
+            <div id="deepfakeModalityResults" style="margin-top: 15px; display: none;">
+              <h3>Signal Indicators</h3>
+              <div id="deepfakeSignals" class="security-row"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: WhatsApp Forward / Social Claim Verifier -->
+      <div class="view-container" id="whatsappView" style="display: none;">
+        <section class="section-grid two">
+          <div class="panel">
+            <p class="eyebrow">Hotline Forward Scanning</p>
+            <h2>WhatsApp & Social Claim Verifier</h2>
+            <textarea id="socialInput" rows="8" placeholder="Paste forwards, tweets, Telegram posts, or SMS claims to query against known viral rumor repositories..."></textarea>
+            <button class="primary-button full" id="verifySocial" type="button" style="margin-top: 15px;">Run Hotline Verification Check</button>
+          </div>
+          <div class="panel">
+            <p class="eyebrow">Verification Findings</p>
+            <h2>Credibility Report</h2>
+            <div class="verification-status" id="socialStatus" style="font-size: 18px; line-height: 1.5;">Waiting for query...</div>
+            <div id="socialExplanation" style="margin-top: 15px; color: var(--muted); font-size: 14px;"></div>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top: 20px;">
+          <p class="eyebrow">Dual Feed Evaluation</p>
+          <h2>Disputed Text vs. Verified Realities</h2>
+          <div class="compare-columns">
+            <div>
+              <h3>Submitted Statement</h3>
+              <p id="disputedText" class="muted">Enter a claim to run contradiction alignment.</p>
+            </div>
+            <div>
+              <h3>Verified Assertions</h3>
+              <p id="verifiedRealityText" class="muted">Factual data extracted from authoritative reports will display here.</p>
+            </div>
+          </div>
+          <div class="badge-row" style="margin-top: 15px;">
+            <span class="badge warning">Heuristics Scan Ready</span>
+            <span class="badge success">Cross-Referencing active</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: Rumor Tracker & Heatmap -->
+      <div class="view-container" id="rumorsView" style="display: none;">
+        <section class="section-grid two">
+          <div class="panel">
+            <p class="eyebrow">Local Monitoring</p>
+            <h2>Trending Regional Rumors</h2>
+            <div class="rumor-list" id="rumorList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+          <div class="panel map-panel">
+            <p class="eyebrow">Interactive Misinformation Map</p>
+            <h2>Geographical Threat Hotspots</h2>
+            <div class="world-map" aria-label="Fake news hotspot map" id="hotspotMap">
+              <span class="hotspot one" data-rumor="Synthetic speech clip claims new banking rules"></span>
+              <span class="hotspot two" data-rumor="Edited storm footage reused from 2022"></span>
+              <span class="hotspot three" data-rumor="Celebrity deepfake endorses investment app"></span>
+              <span class="hotspot four" data-rumor="Local school closure message lacks source"></span>
+            </div>
+            <div id="mapTooltip" class="map-tooltip" style="display: none; position: absolute; background: var(--surface); border: 1px solid var(--line); padding: 8px 12px; border-radius: 6px; font-size: 12px; z-index: 10; pointer-events: none;"></div>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: TRUTHBOT AI Assistant & Multilingual summaries -->
+      <div class="view-container" id="assistantView" style="display: none;">
+        <section class="section-grid two">
+          <div class="panel assistant-panel">
+            <p class="eyebrow">Conversational Verification</p>
+            <h2>TRUTHBOT AI Chat</h2>
+            <div class="chat-window" id="chatWindow">
+              <div class="bot-message">
+                Hello! I am TRUTHBOT AI. Ask me to evaluate claims, extract core bias indicators, summarize complex papers, or compare multiple versions of news.
+              </div>
+            </div>
+            <div class="prompt-row">
+              <input id="botPrompt" type="text" placeholder="Is the synthetic election media surge story trustworthy?">
+              <button class="primary-button" id="askBot" type="button">Ask Bot</button>
+            </div>
+            <div class="quick-prompts">
+              <button type="button">What major bias exists in current articles?</button>
+              <button type="button">Summarize news in 5 bullet points.</button>
+              <button type="button">Detect emotional framing in my verification text.</button>
+            </div>
+          </div>
+          
+          <div class="panel">
+            <p class="eyebrow">Multilingual Intelligence Center</p>
+            <h2>Translation & Audio Summaries</h2>
+            
+            <div class="form-group" style="margin-bottom: 15px;">
+              <label>Select Translation Language</label>
+              <div class="language-grid" id="summaryLangGrid">
+                <span class="lang-pill active" data-lang="English">English</span>
+                <span class="lang-pill" data-lang="Hindi">Hindi</span>
+                <span class="lang-pill" data-lang="Telugu">Telugu</span>
+                <span class="lang-pill" data-lang="Tamil">Tamil</span>
+                <span class="lang-pill" data-lang="Kannada">Kannada</span>
+                <span class="lang-pill" data-lang="Malayalam">Malayalam</span>
+                <span class="lang-pill" data-lang="Marathi">Marathi</span>
+                <span class="lang-pill" data-lang="Bengali">Bengali</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Choose Summary Length</label>
+              <div class="summary-tabs" id="summaryTabRow">
+                <button class="active" type="button" data-length="50">50 words</button>
+                <button type="button" data-length="150">150 words</button>
+                <button type="button" data-length="5points">5 points</button>
+                <button type="button" data-length="timeline">Timeline</button>
+              </div>
+            </div>
+            
+            <div class="summary-container" style="margin-top: 15px; padding: 15px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-strong);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 id="summaryTitle">Aggregated News Summary</h3>
+                <button class="ghost-button small" id="ttsPlayBtn" type="button">🔊 Read Aloud</button>
+              </div>
+              <p class="summary-copy" id="summaryOutput">Select an article or query to generate translation and audio summarizes.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- RELATIONSHIP MAP & TIMELINE GRAPH -->
+        <section class="panel" style="margin-top: 20px;">
+          <p class="eyebrow">News Graph</p>
+          <h2>Source Credibility & Relationship Mapping</h2>
+          <canvas id="sourceGraphCanvas" width="800" height="300" style="width: 100%; height: 300px; background: var(--surface-strong); border-radius: 8px; border: 1px solid var(--line);"></canvas>
+        </section>
+      </div>
+
+      <!-- VIEW: Saved Articles -->
+      <div class="view-container" id="savedView" style="display: none;">
+        <section class="panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">User Library</p>
+              <h2>Your Bookmarked Articles & Read logs</h2>
+            </div>
+          </div>
+          <div class="article-list" id="savedArticleList">
+            <!-- Dynamically populated saved articles -->
+            <p class="muted">No bookmarked articles. Save stories from the news feed to store them here.</p>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top: 20px;">
+          <div class="section-heading">
+            <h2>Personalization Settings & Monitoring</h2>
+          </div>
+          <div class="workflow-grid">
+            <div>
+              <strong>Secure Identity Setup</strong>
+              <span>Configured email + password credentials. Integrated simulated social login flows (Google/Github) and TOTP Multi-factor verification security.</span>
+            </div>
+            <div>
+              <strong>Interest Tracking</strong>
+              <span>History log records reader habits dynamically to bias-balance suggestions.</span>
+            </div>
+            <div>
+              <strong>Gamified Trust Scores</strong>
+              <span>Earn badges and platform points by reporting claims and writing verified corrections.</span>
+            </div>
+            <div>
+              <strong>Extensions Available</strong>
+              <span>Download the integrated Google Chrome Extension zip to check active site ratings on-the-fly. <br><a href="#" id="downloadExtensionLink" style="color: var(--accent); text-decoration: underline; font-weight: bold;">Download ZIP package</a></span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: User Profile Details -->
+      <div class="view-container" id="profileView" style="display: none;">
+        <section class="panel">
+          <div class="profile-header" style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+            <img id="profileAvatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Avatar" class="avatar-large" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--brand);">
+            <div>
+              <h2 id="profileName">Loading User...</h2>
+              <p class="muted" id="profileEmail">user@example.com</p>
+              <span class="badge success" id="profileRole">User</span>
+              <span class="badge warning" id="profilePoints">Trust Points: 0</span>
+            </div>
+          </div>
+
+          <form id="profileForm" style="margin-top: 25px; display: grid; gap: 15px;">
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Update Avatar Image URL</label>
+              <input type="text" id="profileAvatarUrl" placeholder="https://images.unsplash.com/photo-...">
+            </div>
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Short Bio</label>
+              <textarea id="profileBio" rows="3" placeholder="Tell us about yourself, your news interests, or academic focus..."></textarea>
+            </div>
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Default Interface/Summary Language</label>
+              <select id="profileLanguage" style="width:100%; height:40px; border-radius:8px; background:var(--surface-strong); border:1px solid var(--line); padding:0 10px; color:var(--text)">
+                <option value="English">English</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Tamil">Tamil</option>
+                <option value="Kannada">Kannada</option>
+                <option value="Malayalam">Malayalam</option>
+                <option value="Marathi">Marathi</option>
+                <option value="Bengali">Bengali</option>
+              </select>
+            </div>
+            <div class="form-group" style="display:flex; gap:10px; align-items:center; margin: 10px 0;">
+              <input type="checkbox" id="profileMfa" style="width:20px; height:20px;">
+              <label for="profileMfa">Enable Multi-Factor Authentication (TOTP)</label>
+            </div>
+
+            <!-- MFA Activation Steps Container -->
+            <div id="mfaQrContainer" style="display:none; margin: 15px 0; padding:15px; border:1px solid var(--line); border-radius:8px; background:var(--surface-strong)">
+              <p>MFA configuration detected. Setup authentication by entering the secret below, or verify to complete enrollment:</p>
+              <p style="margin: 10px 0; padding: 10px; background: var(--surface); border-radius: 6px; font-family: monospace;">Secret: <span id="mfaSecretKey" style="font-weight: bold; color: var(--accent);">--</span></p>
+              <div class="form-group" style="display: grid; gap: 8px;">
+                <label>Enter Authenticator Code</label>
+                <input type="text" id="mfaVerifyCode" placeholder="Enter 6-digit verification code">
+                <button class="primary-button small" id="mfaVerifyBtn" type="button" style="margin-top: 5px;">Confirm Setup</button>
+              </div>
+            </div>
+
+            <button class="primary-button" type="submit">Update Settings</button>
+          </form>
+        </section>
+
+        <!-- Earned Achievements and Read History -->
+        <section class="panel" style="margin-top: 20px;">
+          <h2>Your Verified Credentials</h2>
+          <h3>Earned Badges</h3>
+          <div class="language-grid" id="userBadgesList" style="margin-bottom: 20px;">
+            <!-- Render badges -->
+          </div>
+          <h3>Reading History History Logs</h3>
+          <div class="article-list" id="readingHistoryList">
+            <!-- Render history list -->
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: Admin Panel Dashboard -->
+      <div class="view-container" id="adminView" style="display: none;">
+        <section class="panel admin-panel">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Supervisory Overview</p>
+              <h2>Admin Command Console</h2>
+            </div>
+            <span class="badge success">RBAC Access Confirmed</span>
+          </div>
+          
+          <div class="admin-grid">
+            <div><strong id="adminActiveUsers">0</strong><span>Registered Members</span></div>
+            <div><strong id="adminReportsCount">0</strong><span>Pending Queue Reports</span></div>
+            <div><strong id="adminAiUsage">0</strong><span>Linguistic Runs</span></div>
+            <div><strong id="adminHealth">99.95%</strong><span>Core API Health</span></div>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top: 20px;">
+          <h2>Community Report Moderation Queue</h2>
+          <div class="article-list" id="adminModerationQueue">
+            <!-- Dynamic moderator queue items -->
+            <p class="muted">No community reports pending verification review.</p>
+          </div>
+        </section>
+
+        <section class="panel" style="margin-top: 20px;">
+          <h2>Platform Audit Logging Logs</h2>
+          <div class="article-list" id="adminAuditLogs" style="max-height: 300px; overflow: auto;">
+            <!-- System audit logging entries -->
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: Login Modal Overlay -->
+      <div class="view-container" id="loginView" style="display: none;">
+        <section class="panel auth-container" style="max-width: 480px; margin: 40px auto; padding: 30px;">
+          <h2>Access TruthLens AI</h2>
+          <p class="muted">Authenticate credentials to synchronize saved articles & configure security options.</p>
+          
+          <form id="loginForm" style="display: grid; gap: 15px; margin-top: 20px;">
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Email Address</label>
+              <input type="email" id="loginEmail" required placeholder="alex.mercer@domain.com">
+            </div>
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Password</label>
+              <input type="password" id="loginPassword" required placeholder="••••••••">
+            </div>
+
+            <!-- Conditional Email OTP request container -->
+            <div class="form-group" id="loginOtpGroup" style="display: none; grid-gap: 5px;">
+              <label>Email OTP Code</label>
+              <input type="text" id="loginOtpCode" placeholder="Enter 6-digit Email OTP">
+            </div>
+
+            <!-- Conditional Authenticator code request container -->
+            <div class="form-group" id="loginMfaGroup" style="display: none; grid-gap: 5px;">
+              <label>Google/MFA Authenticator Code</label>
+              <input type="text" id="loginMfaCode" placeholder="Enter 6-digit TOTP app code">
+            </div>
+
+            <button class="primary-button full" type="submit">Sign In</button>
+          </form>
+
+          <div style="margin: 20px 0; text-align: center;" class="muted">or authenticate using integrations</div>
+          <div style="display: flex; gap: 10px;">
+            <button class="ghost-button full" id="googleLoginSimBtn" type="button">Sign in with Google</button>
+            <button class="ghost-button full" id="githubLoginSimBtn" type="button">Sign in with GitHub</button>
+          </div>
+
+          <div style="margin-top: 20px; text-align: center;">
+            <p>Need access? <a href="#register" style="color: var(--accent); font-weight: bold;">Create an account</a></p>
+            <p style="margin-top: 8px;"><a href="#" id="forgotPasswordBtn" style="color: var(--muted); font-size: 13px;">Forgot password flow?</a></p>
+          </div>
+        </section>
+      </div>
+
+      <!-- VIEW: Register Modal Overlay -->
+      <div class="view-container" id="registerView" style="display: none;">
+        <section class="panel auth-container" style="max-width: 480px; margin: 40px auto; padding: 30px;">
+          <h2>Join TruthLens AI</h2>
+          <p class="muted">Establish your identity, contribute facts, and track media integrity anomalies.</p>
+          
+          <form id="registerForm" style="display: grid; gap: 15px; margin-top: 20px;">
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Full Name</label>
+              <input type="text" id="registerName" required placeholder="Alex Mercer">
+            </div>
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Email Address</label>
+              <input type="email" id="registerEmail" required placeholder="alex.mercer@domain.com">
+            </div>
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Password</label>
+              <input type="password" id="registerPassword" required placeholder="Create password (min 8 chars)">
+            </div>
+            
+            <div class="form-group" style="display: grid; gap: 5px;">
+              <label>Designated Role (Development Seeding)</label>
+              <select id="registerRole" style="width:100%; height:40px; border-radius:8px; background:var(--surface-strong); border:1px solid var(--line); padding:0 10px; color:var(--text)">
+                <option value="User">Standard User</option>
+                <option value="Moderator">Moderator</option>
+                <option value="Admin">Administrator</option>
+              </select>
+            </div>
+
+            <button class="primary-button full" type="submit">Create Account</button>
+          </form>
+
+          <div style="margin-top: 20px; text-align: center;">
+            Already have an account? <a href="#login" style="color: var(--accent); font-weight: bold;">Sign In here</a>
+          </div>
+        </section>
+      </div>
+
+    </main>
+  </div>
+</body>
+</html>

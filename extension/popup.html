@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>TruthLens Verify</title>
+  <style>
+    body { font-family: 'Inter', sans-serif; width: 300px; padding: 15px; margin: 0; background: #0f172a; color: #fff; }
+    h2 { margin-top: 0; font-size: 16px; color: #38bdf8; }
+    .score { font-size: 24px; font-weight: bold; margin: 10px 0; }
+    .score.high { color: #4ade80; }
+    .score.medium { color: #facc15; }
+    .score.low { color: #f87171; }
+    p { font-size: 13px; color: #94a3b8; }
+    button { background: #0ea5e9; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
+    button:hover { background: #0284c7; }
+  </style>
+</head>
+<body>
+  <h2>TruthLens AI</h2>
+  <div id="status">
+    <p>Analyze the current page for claims, biases, and authenticity.</p>
+    <button id="verifyBtn">Scan Current Page</button>
+  </div>
+  <div id="result" style="display: none;">
+    <p>Authenticity Score:</p>
+    <div id="scoreDisplay" class="score">--</div>
+    <p id="summaryText"></p>
+    <button id="resetBtn" style="margin-top: 10px; background: #334155;">Reset</button>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

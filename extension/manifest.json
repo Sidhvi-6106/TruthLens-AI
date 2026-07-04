@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "TruthLens AI Verification",
+  "version": "1.0",
+  "description": "On-the-fly verification of news articles and claims using TruthLens AI.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}
