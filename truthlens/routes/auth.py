@@ -24,6 +24,9 @@ def register():
         return jsonify(result), 201
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Registration failed. Please check deployment database configuration.", "detail": str(e)}), 500
 
 
 @auth_bp.post("/login")
@@ -34,6 +37,9 @@ def login():
         return jsonify(result)
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": "Login failed. Please check deployment database configuration.", "detail": str(e)}), 500
 
 
 @auth_bp.get("/profile")

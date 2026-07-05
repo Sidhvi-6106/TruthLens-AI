@@ -1,4 +1,4 @@
-from flask import Blueprint, current_app, jsonify, render_template
+from flask import Blueprint, Response, current_app, jsonify, render_template
 
 
 pages_bp = Blueprint("pages", __name__)
@@ -18,3 +18,8 @@ def health():
             "services": ["news", "verification", "deepfake", "assistant", "admin"],
         }
     )
+
+
+@pages_bp.get("/favicon.ico")
+def favicon():
+    return Response(status=204)

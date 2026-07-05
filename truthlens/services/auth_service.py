@@ -28,9 +28,7 @@ def register_user(payload: dict) -> dict:
     if User.query.filter_by(email=email).first():
         raise ValueError("An account with this email address already exists.")
 
-    role = Role.query.filter_by(name=role_name).first()
-    if not role:
-        role = Role.query.filter_by(name="User").first()
+    role = _get_or_create_role(role_name)
 
     user = User(
         name=name,
@@ -126,6 +124,23 @@ def authenticate_user(payload: dict) -> dict:
         "access_token": token,
         "user": user.to_dict()
     }
+
+
+def _get_or_create_role(role_name: str) -> Role:
+    allowed = {"User", "Moderator", "Admin"}
+    normalized = role_name if role_name in allowed else "User"
+    role = Role.query.filter_by(name=normalized).first()
+    if role:
+        return role
+
+    role = Role.query.filter_by(name="User").first()
+    if role:
+        return role
+
+    role = Role(name="User", description="Reads news, saves articles, verifies claims and submits reports.")
+    db.session.add(role)
+    db.session.commit()
+    return role
 
 
 def setup_mfa_totp(user_id: int) -> dict:
