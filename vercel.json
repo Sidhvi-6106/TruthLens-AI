@@ -1,5 +1,13 @@
 {
   "version": 2,
-  "cleanUrls": true,
-  "routes": [{ "src": "/(.*)", "dest": "/index.html" }]
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    { "src": "/api/(.*)", "dest": "api/index.py" },
+    { "src": "/(.*)", "dest": "api/index.py" }
+  ]
 }

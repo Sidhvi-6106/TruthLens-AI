@@ -19,8 +19,7 @@ document.getElementById('verifyBtn').addEventListener('click', async () => {
       const pageText = results[0].result;
       
       try {
-        // Assume API is running on localhost for demo
-        const response = await fetch('http://127.0.0.1:5000/api/verification/article', {
+        const response = await fetch('https://truthlens-ai-hazel.vercel.app/api/verification/article', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: pageText.substring(0, 5000) }) // Send first 5k chars
