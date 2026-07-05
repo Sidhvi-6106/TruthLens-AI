@@ -17,13 +17,23 @@ def _normalize_database_uri(raw_uri):
     return raw_uri
 
 
+def _get_default_database_uri(base_dir: Path) -> str:
+    if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME") or os.getenv("FUNCTIONS_WORKER_RUNTIME"):
+        return "sqlite:////tmp/truthlens_dev.db"
+    return f"sqlite:///{base_dir / 'truthlens_dev.db'}"
+
+
 class Config:
     PROJECT_TITLE = "TruthLens AI - Next Generation News Intelligence, Fact Verification & Deepfake Detection Platform"
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-in-production")
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret-change-in-production")
-    SQLALCHEMY_DATABASE_URI = _normalize_database_uri(
-        os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL")
-    ) or f"sqlite:///{BASE_DIR / 'truthlens_dev.db'}"
+    raw_database_uri = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL")
+    if raw_database_uri and raw_database_uri.startswith("sqlite://") and (
+        os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME") or os.getenv("FUNCTIONS_WORKER_RUNTIME")
+    ):
+        raw_database_uri = "sqlite:////tmp/truthlens_dev.db"
+
+    SQLALCHEMY_DATABASE_URI = _normalize_database_uri(raw_database_uri) or _get_default_database_uri(BASE_DIR)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     UPLOAD_FOLDER = Path(os.getenv("UPLOAD_FOLDER", BASE_DIR / "uploads"))
     MAX_CONTENT_LENGTH = 50 * 1024 * 1024  # 50 MB
